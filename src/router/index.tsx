@@ -6,13 +6,14 @@ import {
   } from "react-router-dom";
   
   import App from "../App";
-  import { SignIn } from "../modules";
-  
+  import { SignIn, SignUp } from "@modules";
+
   const Index = () => {
     const router = createBrowserRouter(
       createRoutesFromElements(
         <Route path="/" element={<App />}>
           <Route index element={<SignIn />} />
+          <Route path="sign-up" element={<SignUp />} />
         </Route>
       )
     );
