@@ -23,7 +23,7 @@ const SignUp= () => {
     <div style={{ margin: "auto", marginTop: "50px" }} className="max-w-64 lg:max-w-[450px]">
       <Formik
         initialValues={initialValues}
-        onFinish={handleSubmit}
+        onSubmit={handleSubmit}
       >
         {() => (
           <Form layout="vertical" >
