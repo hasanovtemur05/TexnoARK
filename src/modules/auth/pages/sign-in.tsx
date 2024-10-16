@@ -3,31 +3,33 @@ import { useSignInMutation } from "../hooks/mutations"
 import { Form, Input, Button } from "antd";  
 import erp from "../../../assets/images/erp.jpg";
 import { SignIn as SignInType} from "../types";
+import { useNavigate } from "react-router-dom";
+import { Notification } from "../../../utils/notification";
 
 
 const SignIn = () => {
   const {mutate} = useSignInMutation()
-
+  const navigate = useNavigate();
   const initialValues: SignInType = {
     phone_number: '',
     password: ''
   };
 
-  function handleSubmit(_values: SignInType): void {
-    mutate(_values, {
+
+  function handleSubmit(values: SignInType): void {
+    mutate(values, {
       onSuccess: (res) => {
-        const access_token = res.data.data.tokens.access_token
+        const access_token = res.data?.data?.tokens?.access_token
         console.log(res);
         localStorage.setItem("access_token",access_token );
+        navigate("./category");
       },
       onError: (error) => {
-        console.error("Error:", error);
+        Notification('error', error.message)
       },
     });
   }
-
   
-
     return (
       <>
           <div className="w-full h-[100vh] flex justify-center items-center">
@@ -64,7 +66,6 @@ const SignIn = () => {
                   type="primary"
                   htmlType="submit"
                   block
-            
                 >
                   Sign In
                 </Button>
@@ -74,7 +75,6 @@ const SignIn = () => {
         </div>
       </div>
     </>
-
     )
   }
   export default SignIn

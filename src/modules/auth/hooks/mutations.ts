@@ -4,7 +4,7 @@ import { SignIn, SignUp } from '../types';
 
 export function useSignInMutation(){
     return useMutation({
-        mutationFn: (data:SignIn)=> signIn(data)
+        mutationFn: (data:SignIn)=> signIn(data),
     })
 }
 
