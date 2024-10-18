@@ -1,9 +1,11 @@
 export interface CategoryDataType {
+    id: string | number
     name: string;
-    id?: string
-}
+    createdAt: string 
+  }
 
 export interface StyleType {
     color?: string
     fontSize?: string
 }
+

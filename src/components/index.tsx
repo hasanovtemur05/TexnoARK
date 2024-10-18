@@ -1,3 +1,3 @@
 import Loading from "./loading"
-
-export { Loading } 
+import GlobalTable from "./table"
+export { Loading, GlobalTable } 

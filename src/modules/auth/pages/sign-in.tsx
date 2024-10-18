@@ -22,7 +22,7 @@ const SignIn = () => {
         const access_token = res.data?.data?.tokens?.access_token
         console.log(res);
         localStorage.setItem("access_token",access_token );
-        navigate("./category");
+        navigate("./admin-layout");
       },
       onError: (error) => {
         Notification('error', error.message)

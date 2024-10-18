@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCategory, deleteCategory } from "../service";
 import { CategoryDataType } from "../types";
@@ -13,13 +12,8 @@ export function useCreateCategory () {
         onSuccess: async (response)=>{
             Notification('success', response?.message)
         },
-        onSettled: async (error)=>{
-            if (error) {
-                // Notification("error", error?.message)
-
-            } else{
+        onSettled: async ()=>{
                await queryClient.invalidateQueries({queryKey: ['category']})
-            }
         },
         onError: async (error)=>{
             Notification("error", error?.message)
@@ -38,7 +32,7 @@ export function useUpdateCategory () {
       },
       onSettled: async (error, variables:any)=>{
           if (error) {
-            Notification('error', error.message)
+            Notification('error', error?.message)
           } else{
                 await  queryClient.invalidateQueries({queryKey: ['category', {id:variables.id}]})
           }
