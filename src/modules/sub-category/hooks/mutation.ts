@@ -1,14 +1,17 @@
+
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createCategory, deleteCategory } from "../service";
-import { CategoryDataType } from "../types";
+import { createSubCategory, deleteSubCategory } from "../service";
+import { SubCategoryDataType } from "../types";
 import { Notification } from "../../../utils/notification";
+import { deleteCategory } from "../../category/service";
 
 
 // =================================  CREATE  ====================================
-export function useCreateCategory () {
+export function useCreateSubCategory () {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: (data:CategoryDataType) => createCategory(data),
+        mutationFn: (data:SubCategoryDataType) => createSubCategory(data),
         onSuccess: async (response)=>{
             Notification('success', response?.message)
         },
@@ -16,7 +19,7 @@ export function useCreateCategory () {
                if (error) {
                Notification('error', error?.message)
                }else{
-                await queryClient.invalidateQueries({queryKey: ['category']})
+                await queryClient.invalidateQueries({queryKey: ['subcategory']})
                }
         },
        
@@ -25,10 +28,10 @@ export function useCreateCategory () {
 
 
 // ==============================  UPDATE  ===================================
-export function useUpdateCategory () {
+export function useUpdateSubCategory () {
   const queryClient = useQueryClient()
   return useMutation({
-      mutationFn: (data:CategoryDataType) => createCategory(data),
+      mutationFn: (id:string | number) => deleteSubCategory(id),
       onSuccess: async (response)=>{
         Notification("success", response?.message)
       },
@@ -36,7 +39,7 @@ export function useUpdateCategory () {
           if (error) {
             Notification('error', error?.message)
           } else{
-                await  queryClient.invalidateQueries({queryKey: ['category', {id:variables.id}]})
+                await  queryClient.invalidateQueries({queryKey: ['subcategory', {id:variables.id}]})
           }
       }
   }) 
@@ -45,7 +48,7 @@ export function useUpdateCategory () {
 
 
 // ====================================   DELETE   =====================================
-export function useDeleteCategory(){
+export function useDeleteSubCategory(){
     const queryClient = useQueryClient() 
     return useMutation({
         mutationFn: (id: string | number) => deleteCategory(id),
@@ -56,7 +59,7 @@ export function useDeleteCategory(){
             if (error) {
                 Notification("error", error?.message)
             } else{
-               await queryClient.invalidateQueries({queryKey: ['category']})
+               await queryClient.invalidateQueries({queryKey: ['subcategory']})
             }
         }
     })

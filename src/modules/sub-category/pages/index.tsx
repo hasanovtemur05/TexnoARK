@@ -1,70 +1,68 @@
 import { useState } from "react";
-import { useGetCategory } from "../hooks/queries";
-import { useCreateCategory, useUpdateCategory } from "../hooks/mutation";
-import CategoryModal from "./modal";
-import { Button, Spin, Tooltip, Popconfirm, Space} from "antd";
-import { EditOutlined, DeleteOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import { useQueryClient } from "@tanstack/react-query"; // To'g'ri import
+import { useGetSubCategory } from "../hooks/queries";
+import { useCreateSubCategory, useUpdateSubCategory } from "../hooks/mutation";
+import SubCategoryModal from "./modal";
+import { Button, Spin, Tooltip, Popconfirm, Space } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { Category as CategoryType, CategoryDataType } from "../types";
-import { deleteCategory } from "../service"; 
 import { GlobalTable } from "@components";
 import { ColumnsType } from "antd/es/table";
 import { ParamsType } from "@types";
+import { SubCategoryDataType } from "../types";
+import { deleteCategory } from "../../category/service";
+import { Category } from "../../category/types";
 
-const Category = () => {
+const SubCategory = () => {
   const [params, setParams] = useState<ParamsType>({
-    limit: 10,
+    limit: 3,
     page: 1,
     search: "",
   });
 
   const [open, setOpen] = useState(false);
-  const [updateData, setUpdateData] = useState<CategoryDataType | null>(null); 
+  const [updateData, setUpdateData] = useState<SubCategoryDataType | null>(null);
   const navigate = useNavigate();
-  const { data, isLoading, isError, refetch } = useGetCategory(params);
-  const { mutate: createMutate } = useCreateCategory();
-  const { mutate: updateMutate } = useUpdateCategory(); 
+  const queryClient = useQueryClient(); 
+
+  const { data, isLoading, isError } = useGetSubCategory(); 
+  console.log(data?.data?.subcategories);
+
+  const { mutate: createMutate } = useCreateSubCategory();
+  const { mutate: updateMutate } = useUpdateSubCategory();
 
   const handleClose = () => {
     setOpen(false);
-    setUpdateData(null); 
+    setUpdateData(null);
   };
 
-
-  const handleSubmit = (values: CategoryDataType) => {
-    if (updateData) { 
-        const payload = { ...updateData, ...values }; 
-        updateMutate(payload, {
-            onSuccess: () => {
-                refetch();
-                handleClose();
-
-            },
-            onError: () => {
-                handleClose();
-            },
-        });
-    } else { 
-        createMutate(values, {
-            onSuccess: () => {
-                refetch();
-                handleClose();
-               
-            },
-            onError: () => {
-                handleClose();
-            },
-        });
+  const handleSubmit = (values: SubCategoryDataType) => {
+    if (updateData) {
+      const payload: string | number = updateData.id; 
+      updateMutate(payload, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["subcategory"] });
+          handleClose();
+        },
+        onError: () => {
+          handleClose();
+        },
+      });
+    } else {
+      createMutate(values, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["subcategory"] });
+          handleClose();
+        },
+        onError: () => {
+          handleClose();
+        },
+      });
     }
-};
+  };
+  
 
-
-
-
-  const handleTableChange = (pagination: {
-    current?: number;
-    pageSize?: number;
-  }) => {
+  const handleTableChange = (pagination: { current?: number; pageSize?: number }) => {
     const { current = 1, pageSize = 10 } = pagination;
     setParams((prev) => ({
       ...prev,
@@ -81,7 +79,7 @@ const Category = () => {
   if (isLoading) return <Spin />;
   if (isError) return <div>Failed to load categories</div>;
 
-  const columns: ColumnsType<CategoryType> = [
+  const columns: ColumnsType<Category>  = [
     {
       title: "T/R",
       dataIndex: "index",
@@ -98,13 +96,13 @@ const Category = () => {
     {
       title: "Action",
       key: "action",
-      render: (_: any, record: CategoryDataType) => (
+      render: (_: any, record: SubCategoryDataType) => (
         <Space>
           <Tooltip title="Edit">
             <Button
               onClick={() => {
                 setUpdateData(record);
-                setOpen(true); 
+                setOpen(true);
               }}
               icon={<EditOutlined />}
             />
@@ -112,22 +110,15 @@ const Category = () => {
           <Popconfirm
             title="Are you sure to delete this category?"
             onConfirm={() => {
-              deleteCategory(record.id);
-              refetch();
+              deleteCategory(record.id).then(() => {
+                queryClient.invalidateQueries({ queryKey: ["subcategory"] }); 
+              });
             }}
           >
             <Tooltip title="Delete">
               <Button danger icon={<DeleteOutlined />} />
             </Tooltip>
           </Popconfirm>
-          <Tooltip title="Sub-category">
-            <Button
-              onClick={() =>
-                navigate(`/admin-layout/sub-category/${record.id}`)
-              }
-              icon={<ArrowRightOutlined />}
-            />
-          </Tooltip>
         </Space>
       ),
     },
@@ -135,19 +126,18 @@ const Category = () => {
 
   return (
     <>
-      <CategoryModal
+      <SubCategoryModal
         open={open}
         handleClose={handleClose}
-        update={updateData} 
+        update={updateData}
         onSubmit={handleSubmit}
       />
       <Button onClick={() => { setOpen(true); setUpdateData(null); }} type="primary">
-        Create Category
+        Create SubCategory
       </Button>
-
       <GlobalTable
         columns={columns}
-        data={data?.data?.categories || []}
+        data={data?.data?.subcategories}
         pagination={{
           current: params.page,
           pageSize: params.limit,
@@ -161,4 +151,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default SubCategory;

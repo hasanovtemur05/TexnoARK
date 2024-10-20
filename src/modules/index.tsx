@@ -18,4 +18,9 @@ const AdminLayout = loadable(()=> import ("./admin-layout/pages"),{
     fallback: <Loading/>
 })
 
-export { SignIn, SignUp, Category, AdminLayout }
+const SubCategory = loadable(()=> import ("./sub-category/pages"),{
+    fallback: <Loading/>
+})
+
+
+export { SignIn, SignUp, Category, AdminLayout, SubCategory }

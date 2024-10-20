@@ -3,7 +3,7 @@ import { ParamsType } from "@types";
 import { CategoryDataType } from "../types";
 
 // ===================  GET CATEGORY  ========================
-export const getCategory = async (params:ParamsType) => {
+export const getCategory = async (params: ParamsType) => {
     const response = await axiosInstance.get("category/search", {
         params
     })
