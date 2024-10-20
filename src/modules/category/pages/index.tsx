@@ -13,7 +13,6 @@ import { ParamsType } from "@types";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Category = () => {
-  // Setting default pagination params
   const [params, setParams] = useState<ParamsType>({
     limit: 3,
     page: 1,

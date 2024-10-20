@@ -39,16 +39,12 @@ const SubCategory = () => {
 
   const handleSubmit = (values: SubCategoryDataType) => {
     if (updateData) {
-      const payload: string | number = updateData.id;
-      updateMutate(payload, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["subcategory"] });
-          handleClose();
-        },
-        onError: () => {
-          handleClose();
-        },
-      });
+      const payload = { ...values }; 
+      const categoryId = Number(updateData.id); 
+  
+      updateMutate({ id: categoryId, data: payload });
+      
+      handleClose(); 
     } else {
       createMutate(values, {
         onSuccess: () => {
@@ -61,6 +57,7 @@ const SubCategory = () => {
       });
     }
   };
+  
 
   const handleTableChange = (pagination: {
     current?: number;

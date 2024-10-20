@@ -1,10 +1,9 @@
 
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createSubCategory, deleteSubCategory } from "../service";
+import { createSubCategory, deleteSubCategory, updateSubCategory } from "../service";
 import { SubCategoryDataType } from "../types";
 import { Notification } from "../../../utils/notification";
-import { deleteCategory } from "../../category/service";
 
 
 // =================================  CREATE  ====================================
@@ -25,22 +24,20 @@ export function useCreateSubCategory() {
 
 
 // ==============================  UPDATE  ===================================
-export function useUpdateSubCategory () {
-  const queryClient = useQueryClient()
-  return useMutation({
-      mutationFn: (id:string | number) => deleteSubCategory(id),
-      onSuccess: async (response)=>{
-        Notification("success", response?.message)
+export function useUpdateSubCategory() {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: ({ id, data }: { id: number; data: SubCategoryDataType }) => updateSubCategory(id, data), // Ikki argument
+      onSuccess: async (response) => {
+        Notification("success", response?.message);
+        await queryClient.invalidateQueries({ queryKey: ['subcategory'] });
       },
-      onSettled: async (error, variables:any)=>{
-          if (error) {
-            Notification('error', error?.message)
-          } else{
-                await queryClient.invalidateQueries({queryKey: ['subcategory', {id:variables.id}]})
-          }
-      }
-  }) 
-}
+      onError: (error) => {
+        Notification('error', error?.message);
+      },
+    });
+  }
+  
 
 
 
@@ -48,7 +45,7 @@ export function useUpdateSubCategory () {
 export function useDeleteSubCategory() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (id: string | number) => deleteCategory(id),
+        mutationFn: (id: string | number) => deleteSubCategory(id),
         onSuccess: (response) => {
             Notification("success", response?.message);
             queryClient.invalidateQueries({ queryKey: ['subcategory'] }); 

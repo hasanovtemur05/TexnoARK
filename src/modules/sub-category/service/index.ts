@@ -19,10 +19,11 @@ export const createSubCategory = async (data: SubCategoryDataType,) => {
 };
 
 // ========================================  UPDATE SUB_CATEGORY  ============================================
-export const updateSubCategory = async (id: number | string, data: any) => {
-    const response = await axiosInstance.put(`sub-category/update/${id}`, data); 
+export const updateSubCategory = async (id: number, data: any) => {
+    const response = await axiosInstance.patch(`sub-category/update/${id}`, data); 
     return response?.data;
 };
+
 
 // ========================================  DELETE SUB_CATEGORY  ============================================
 export const deleteSubCategory = async (id: number | string) => {
