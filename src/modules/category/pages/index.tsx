@@ -2,69 +2,65 @@ import { useState } from "react";
 import { useGetCategory } from "../hooks/queries";
 import { useCreateCategory, useUpdateCategory } from "../hooks/mutation";
 import CategoryModal from "./modal";
-import { Button, Spin, Tooltip, Popconfirm, Space} from "antd";
+import { Button, Tooltip, Popconfirm, Space } from "antd";
 import { EditOutlined, DeleteOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Category as CategoryType, CategoryDataType } from "../types";
-import { deleteCategory } from "../service"; 
-import { GlobalTable } from "@components";
+import { deleteCategory } from "../service";
+import { GlobalTable, Loading } from "@components";
 import { ColumnsType } from "antd/es/table";
 import { ParamsType } from "@types";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Category = () => {
+  // Setting default pagination params
   const [params, setParams] = useState<ParamsType>({
-    limit: 10,
+    limit: 3,
     page: 1,
     search: "",
   });
 
   const [open, setOpen] = useState(false);
-  const [updateData, setUpdateData] = useState<CategoryDataType | null>(null); 
+  const [updateData, setUpdateData] = useState<CategoryDataType | null>(null);
   const navigate = useNavigate();
-  const { data, isLoading, isError, refetch } = useGetCategory(params);
+  const queryClient = useQueryClient();
+
+  // Passing the pagination params to the useGetCategory hook
+  const { data, isLoading } = useGetCategory(params);
   const { mutate: createMutate } = useCreateCategory();
-  const { mutate: updateMutate } = useUpdateCategory(); 
+  const { mutate: updateMutate } = useUpdateCategory();
 
   const handleClose = () => {
     setOpen(false);
-    setUpdateData(null); 
+    setUpdateData(null);
   };
 
-
   const handleSubmit = (values: CategoryDataType) => {
-    if (updateData) { 
-        const payload = { ...updateData, ...values }; 
-        updateMutate(payload, {
-            onSuccess: () => {
-                refetch();
-                handleClose();
-
-            },
-            onError: () => {
-                handleClose();
-            },
-        });
-    } else { 
-        createMutate(values, {
-            onSuccess: () => {
-                refetch();
-                handleClose();
-               
-            },
-            onError: () => {
-                handleClose();
-            },
-        });
+    if (updateData) {
+      const payload = { ...values, id: updateData.id };
+      updateMutate(payload, {
+        onSuccess: () => {
+          handleClose();
+          queryClient.invalidateQueries({ queryKey: ["category"] });
+        },
+        onError: () => {
+          handleClose();
+        },
+      });
+    } else {
+      createMutate(values, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["category"] });
+          handleClose();
+        },
+        onError: () => {
+          handleClose();
+        },
+      });
     }
-};
+  };
 
-
-
-
-  const handleTableChange = (pagination: {
-    current?: number;
-    pageSize?: number;
-  }) => {
+  const handleTableChange = (pagination: { current?: number; pageSize?: number }) => {
     const { current = 1, pageSize = 10 } = pagination;
     setParams((prev) => ({
       ...prev,
@@ -78,8 +74,7 @@ const Category = () => {
     navigate(`?${current_params.toString()}`);
   };
 
-  if (isLoading) return <Spin />;
-  if (isError) return <div>Failed to load categories</div>;
+  if (isLoading) return <Loading />;
 
   const columns: ColumnsType<CategoryType> = [
     {
@@ -104,7 +99,7 @@ const Category = () => {
             <Button
               onClick={() => {
                 setUpdateData(record);
-                setOpen(true); 
+                setOpen(true);
               }}
               icon={<EditOutlined />}
             />
@@ -113,7 +108,7 @@ const Category = () => {
             title="Are you sure to delete this category?"
             onConfirm={() => {
               deleteCategory(record.id);
-              refetch();
+              queryClient.invalidateQueries({ queryKey: ["category"] });
             }}
           >
             <Tooltip title="Delete">
@@ -122,9 +117,7 @@ const Category = () => {
           </Popconfirm>
           <Tooltip title="Sub-category">
             <Button
-              onClick={() =>
-                navigate(`/admin-layout/sub-category/${record.id}`)
-              }
+              onClick={() => navigate(`/admin-layout/sub-category/${record.id}`)}
               icon={<ArrowRightOutlined />}
             />
           </Tooltip>
@@ -135,12 +128,7 @@ const Category = () => {
 
   return (
     <>
-      <CategoryModal
-        open={open}
-        handleClose={handleClose}
-        update={updateData} 
-        onSubmit={handleSubmit}
-      />
+      <CategoryModal open={open} handleClose={handleClose} update={updateData} onSubmit={handleSubmit} />
       <Button onClick={() => { setOpen(true); setUpdateData(null); }} type="primary">
         Create Category
       </Button>
@@ -151,9 +139,9 @@ const Category = () => {
         pagination={{
           current: params.page,
           pageSize: params.limit,
-          total: data?.total || 0,
+          total: data?.total || 2, 
           showSizeChanger: true,
-          pageSizeOptions: ["2", "5", "7", "10", "12"],
+          pageSizeOptions: ["3", "5", "7", "10", "12"],
         }}
         onChange={handleTableChange}
       />

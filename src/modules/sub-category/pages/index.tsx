@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query"; // To'g'ri import
+import { useQueryClient } from "@tanstack/react-query";
 import { useGetSubCategory } from "../hooks/queries";
 import { useCreateSubCategory, useUpdateSubCategory } from "../hooks/mutation";
 import SubCategoryModal from "./modal";
-import { Button, Spin, Tooltip, Popconfirm, Space } from "antd";
+import { Button, Tooltip, Popconfirm, Space } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { GlobalTable } from "@components";
+import { GlobalTable, Loading } from "@components";
 import { ColumnsType } from "antd/es/table";
 import { ParamsType } from "@types";
 import { SubCategoryDataType } from "../types";
-import { deleteCategory } from "../../category/service";
 import { Category } from "../../category/types";
+import { deleteSubCategory } from "../service";
 
 const SubCategory = () => {
   const [params, setParams] = useState<ParamsType>({
@@ -21,11 +21,12 @@ const SubCategory = () => {
   });
 
   const [open, setOpen] = useState(false);
-  const [updateData, setUpdateData] = useState<SubCategoryDataType | null>(null);
+  const [updateData, setUpdateData] = useState<SubCategoryDataType | null>(
+    null
+  );
   const navigate = useNavigate();
-  const queryClient = useQueryClient(); 
-
-  const { data, isLoading, isError } = useGetSubCategory(); 
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useGetSubCategory();
   console.log(data?.data?.subcategories);
 
   const { mutate: createMutate } = useCreateSubCategory();
@@ -38,7 +39,7 @@ const SubCategory = () => {
 
   const handleSubmit = (values: SubCategoryDataType) => {
     if (updateData) {
-      const payload: string | number = updateData.id; 
+      const payload: string | number = updateData.id;
       updateMutate(payload, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["subcategory"] });
@@ -60,9 +61,11 @@ const SubCategory = () => {
       });
     }
   };
-  
 
-  const handleTableChange = (pagination: { current?: number; pageSize?: number }) => {
+  const handleTableChange = (pagination: {
+    current?: number;
+    pageSize?: number;
+  }) => {
     const { current = 1, pageSize = 10 } = pagination;
     setParams((prev) => ({
       ...prev,
@@ -76,14 +79,14 @@ const SubCategory = () => {
     navigate(`?${current_params.toString()}`);
   };
 
-  if (isLoading) return <Spin />;
-  if (isError) return <div>Failed to load categories</div>;
+  if (isLoading) return <Loading />;
 
-  const columns: ColumnsType<Category>  = [
+  const columns: ColumnsType<Category> = [
     {
       title: "T/R",
       dataIndex: "index",
-      render: (_text, _record, index) => index + 1 + (params.page - 1) * params.limit,
+      render: (_text, _record, index) =>
+        index + 1 + (params.page - 1) * params.limit,
     },
     {
       title: "Name",
@@ -110,8 +113,9 @@ const SubCategory = () => {
           <Popconfirm
             title="Are you sure to delete this category?"
             onConfirm={() => {
-              deleteCategory(record.id).then(() => {
-                queryClient.invalidateQueries({ queryKey: ["subcategory"] }); 
+              console.log(record.id);
+              deleteSubCategory(record.id).then(() => {
+                queryClient.invalidateQueries({ queryKey: ["subcategory"] });
               });
             }}
           >
@@ -132,7 +136,13 @@ const SubCategory = () => {
         update={updateData}
         onSubmit={handleSubmit}
       />
-      <Button onClick={() => { setOpen(true); setUpdateData(null); }} type="primary">
+      <Button
+        onClick={() => {
+          setOpen(true);
+          setUpdateData(null);
+        }}
+        type="primary"
+      >
         Create SubCategory
       </Button>
       <GlobalTable

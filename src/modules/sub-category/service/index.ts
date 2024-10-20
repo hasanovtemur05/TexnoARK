@@ -1,12 +1,7 @@
 import axiosInstance from "@api";
-import { ParamsType } from "@types";
 import { SubCategoryDataType } from "../types";
 
-// ========================================  GET CATEGORY  ==============================================
-export const getCategory = async (params: ParamsType) => {
-    const response = await axiosInstance.get("category/search", { params });
-    return response?.data;
-};
+
 
 // ========================================  GET SUB_CATEGORY  ============================================
 export const getSubCategory = async (parent_id:number) => {
@@ -18,7 +13,7 @@ export const getSubCategory = async (parent_id:number) => {
 
 
 // ========================================  CREATE SUB_CATEGORY  ============================================
-export const createSubCategory = async (data: SubCategoryDataType) => {
+export const createSubCategory = async (data: SubCategoryDataType,) => {
     const response = await axiosInstance.post("sub-category/create", data);
     return response?.data;
 };

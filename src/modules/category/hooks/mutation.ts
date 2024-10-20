@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createCategory, deleteCategory } from "../service";
+import { createCategory, deleteCategory, updateCategory } from "../service";
 import { CategoryDataType } from "../types";
 import { Notification } from "../../../utils/notification";
 
@@ -25,22 +25,24 @@ export function useCreateCategory () {
 
 
 // ==============================  UPDATE  ===================================
-export function useUpdateCategory () {
-  const queryClient = useQueryClient()
-  return useMutation({
-      mutationFn: (data:CategoryDataType) => createCategory(data),
-      onSuccess: async (response)=>{
-        Notification("success", response?.message)
+export function useUpdateCategory() {
+    const queryClient = useQueryClient();
+  
+    return useMutation({
+      mutationFn: (data: CategoryDataType) => updateCategory(data),
+      onSuccess: (response) => {
+        Notification("success", response?.message);
+        queryClient.invalidateQueries({ queryKey: ['category'] }); 
       },
-      onSettled: async (error, variables:any)=>{
-          if (error) {
-            Notification('error', error?.message)
-          } else{
-                await  queryClient.invalidateQueries({queryKey: ['category', {id:variables.id}]})
-          }
-      }
-  }) 
+      onError: (error) => {
+        Notification('error', error?.message); 
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: ['category'] });
+      },
+    });
 }
+
 
 
 

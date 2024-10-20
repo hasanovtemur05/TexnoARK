@@ -18,13 +18,14 @@ export const createCategory = async (data:CategoryDataType) => {
 }
 
 
-// ======================  UPDATE  ==========================
 
+// ======================  UPDATE  ==========================
 export const updateCategory = async (data: CategoryDataType) => {
-    const { id } = data;
-    const response = await axiosInstance.patch(`category/update/${id}`, data);
+    const { id, ...updateData } = data;  
+    const response = await axiosInstance.patch(`category/update/${id}`, updateData);  
     return response?.data;
 };
+
 
 
 

@@ -4,11 +4,9 @@ import { useParams } from "react-router-dom";
 
 export function useGetSubCategory() {
     const { id } = useParams();
-    
-    
     const { data, isLoading, isError } = useQuery({
         queryFn: () => getSubCategory(Number(id)),
-        queryKey: ["subcategory", id],
+        queryKey: ["subcategory"],
     });
     
     return {
