@@ -9,4 +9,5 @@ export interface ModalPropType {
     handleClose: ()=> void
     update?: any
     onSubmit?: (values: any) => void;
+    
 }

@@ -27,7 +27,7 @@ export function useCreateSubCategory() {
 export function useUpdateSubCategory() {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: ({ id, data }: { id: number; data: SubCategoryDataType }) => updateSubCategory(id, data), // Ikki argument
+      mutationFn: ({ id, data }: { id: number; data: SubCategoryDataType }) => updateSubCategory(id, data),
       onSuccess: async (response) => {
         Notification("success", response?.message);
         await queryClient.invalidateQueries({ queryKey: ['subcategory'] });

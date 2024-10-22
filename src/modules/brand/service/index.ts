@@ -27,19 +27,15 @@ export const createBrand = async (data:FormData) => {
 
 // ======================  UPDATE  ==========================
 export const updateBrand = async (data: FormData) => {
-    const id = data.get('id'); 
-    if (typeof id !== 'string') {
-        throw new Error("ID is required and must be a string"); 
-    }
-    const updateData: { [key: string]: any } = {}; 
-    for (const [key, value] of data.entries()) {
-        if (key !== 'id') {
-            updateData[key] = value; 
-        }
-    }
-    const response = await axiosInstance.patch(`brand/update/${id}`, updateData);  
-    return response?.data;
+    const id = data.get('id') as string;
+    const updateData = Array.from(data.entries())
+        .filter(([key]) => key !== 'id' && key !== 'category_id')
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+    const response = await axiosInstance.patch(`brand/update/${id}`, updateData);
+    return response.data;
 };
+
+
 
 
 

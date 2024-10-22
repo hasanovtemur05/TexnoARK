@@ -38,6 +38,8 @@ const BrandModal = ({ open, handleClose, update }: ModalPropType) => {
     formData.append("category_id", `${values.category_id}`);
     formData.append("description", values.description);
 
+    console.log(values);
+    
     if (file) {
         formData.append("file", file);
     }
@@ -51,6 +53,7 @@ const BrandModal = ({ open, handleClose, update }: ModalPropType) => {
 
     handleClose(); 
 };
+
 
 
   const setFieldValue = (name: string, value: any) => {

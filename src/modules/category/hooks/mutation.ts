@@ -52,9 +52,9 @@ export function useDeleteCategory(){
     return useMutation({
         mutationFn: (id: string | number) => deleteCategory(id),
         onSuccess: (response)=>{
-            Notification("success", response?.message)
+            Notification("success", response?.message) 
         },
-        onSettled: async (error)=>{
+        onSettled: async (_,error)=>{
             if (error) {
                 Notification("error", error?.message)
             } else{

@@ -1,10 +1,19 @@
 import { Button, Form, Input, Modal } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useEffect } from "react";
-import { ModalPropType } from "@types";  
+import { CategoryDataType } from "../types";
+import { useCreateCategory, useUpdateCategory } from "../hooks/mutation";
+import { useQueryClient } from "@tanstack/react-query";
+import { ModalPropType } from "@types";
 
-const CategoryModal = ({ open, handleClose, update, onSubmit }: ModalPropType) => {
+
+
+const CategoryModal = ({ open, handleClose, update }: ModalPropType) => {
   const [form] = useForm();
+  const queryClient = useQueryClient();
+
+  const { mutate: createMutate } = useCreateCategory();
+  const { mutate: updateMutate } = useUpdateCategory();
 
   useEffect(() => {
     if (open) {
@@ -16,16 +25,37 @@ const CategoryModal = ({ open, handleClose, update, onSubmit }: ModalPropType) =
     }
   }, [update, open, form]);
 
-  const handleSubmit = (values: any) => {
-    onSubmit(values);  
+  const handleSubmit = (values: CategoryDataType) => {
+    if (update) {
+      const payload = { ...values, id: update.id };
+      updateMutate(payload, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["category"] });
+          handleClose();
+        },
+        onError: () => {
+          handleClose();
+        },
+      });
+    } else {
+      createMutate(values, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["category"] });
+          handleClose();
+        },
+        onError: () => {
+          handleClose();
+        },
+      });
+    }
   };
 
   return (
     <Modal
-      title={update ? "Edit Category" : "Add Category"}  
+      title={update ? "Edit Category" : "Add Category"}
       open={open}
-      onCancel={handleClose}  
-      footer={null}  
+      onCancel={handleClose}
+      footer={null}
     >
       <Form layout="vertical" onFinish={handleSubmit} form={form}>
         <Form.Item
@@ -38,7 +68,7 @@ const CategoryModal = ({ open, handleClose, update, onSubmit }: ModalPropType) =
 
         <Form.Item>
           <Button type="primary" htmlType="submit" block>
-            {update ? "Update" : "Create"}  
+            {update ? "Update" : "Create"}
           </Button>
         </Form.Item>
       </Form>

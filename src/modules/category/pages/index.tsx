@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useGetCategory } from "../hooks/queries";
-import { useCreateCategory, useUpdateCategory } from "../hooks/mutation";
 import CategoryModal from "./modal";
 import { Button, Tooltip, Popconfirm, Space } from "antd";
 import { EditOutlined, DeleteOutlined, ArrowRightOutlined } from "@ant-design/icons";
@@ -24,39 +23,11 @@ const Category = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Passing the pagination params to the useGetCategory hook
   const { data, isLoading } = useGetCategory(params);
-  const { mutate: createMutate } = useCreateCategory();
-  const { mutate: updateMutate } = useUpdateCategory();
 
   const handleClose = () => {
     setOpen(false);
     setUpdateData(null);
-  };
-
-  const handleSubmit = (values: CategoryDataType) => {
-    if (updateData) {
-      const payload = { ...values, id: updateData.id };
-      updateMutate(payload, {
-        onSuccess: () => {
-          handleClose();
-          queryClient.invalidateQueries({ queryKey: ["category"] });
-        },
-        onError: () => {
-          handleClose();
-        },
-      });
-    } else {
-      createMutate(values, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["category"] });
-          handleClose();
-        },
-        onError: () => {
-          handleClose();
-        },
-      });
-    }
   };
 
   const handleTableChange = (pagination: { current?: number; pageSize?: number }) => {
@@ -128,7 +99,7 @@ const Category = () => {
 
   return (
     <>
-      <CategoryModal open={open} handleClose={handleClose} update={updateData} onSubmit={handleSubmit} />
+      <CategoryModal open={open} handleClose={handleClose} update={updateData} />
       <Button onClick={() => { setOpen(true); setUpdateData(null); }} type="primary">
         Create Category
       </Button>
