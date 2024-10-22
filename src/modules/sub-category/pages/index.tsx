@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetSubCategory } from "../hooks/queries";
-import { useCreateSubCategory, useUpdateSubCategory } from "../hooks/mutation";
 import SubCategoryModal from "./modal";
 import { Button, Tooltip, Popconfirm, Space, Input } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -10,8 +9,8 @@ import { GlobalTable, Loading } from "@components";
 import { ColumnsType } from "antd/es/table";
 import { ParamsType } from "@types";
 import { SubCategoryDataType } from "../types";
-import { Category } from "../../category/types";
 import { deleteSubCategory } from "../service";
+import { Category } from "../../category/types";
 
 const SubCategory = () => {
   const [params, setParams] = useState<ParamsType>({
@@ -21,55 +20,25 @@ const SubCategory = () => {
   });
 
   const [open, setOpen] = useState(false);
-  const [updateData, setUpdateData] = useState<SubCategoryDataType | null>(
-    null
-  );
+  const [updateData, setUpdateData] = useState<SubCategoryDataType | null>(null);
   const { search } = useLocation();
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data, isLoading } = useGetSubCategory();
-  console.log(data?.data?.subcategories);
 
   useEffect(() => {
     if (data?.data?.count) {
-      setTotal(data?.data?.count);  
+      setTotal(data?.data?.count);
     }
   }, [data]);
-  const { mutate: createMutate } = useCreateSubCategory();
-  const { mutate: updateMutate } = useUpdateSubCategory();
 
   const handleClose = () => {
     setOpen(false);
     setUpdateData(null);
   };
 
-  const handleSubmit = (values: SubCategoryDataType) => {
-    if (updateData) {
-      const payload = { ...values }; 
-      const categoryId = Number(updateData.id); 
-  
-      updateMutate({ id: categoryId, data: payload });
-      
-      handleClose(); 
-    } else {
-      createMutate(values, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["subcategory"] });
-          handleClose();
-        },
-        onError: () => {
-          handleClose();
-        },
-      });
-    }
-  };
-  
-
-  const handleTableChange = (pagination: {
-    current?: number;
-    pageSize?: number;
-  }) => {
+  const handleTableChange = (pagination: { current?: number; pageSize?: number }) => {
     const { current = 1, pageSize = 3 } = pagination;
     setParams((prev) => ({
       ...prev,
@@ -102,8 +71,7 @@ const SubCategory = () => {
     {
       title: "T/R",
       dataIndex: "index",
-      render: (_text, _record, index) =>
-        index + 1 + (params.page - 1) * params.limit,
+      render: (_text, _record, index) => index + 1 + (params.page - 1) * params.limit,
     },
     {
       title: "Name",
@@ -112,7 +80,7 @@ const SubCategory = () => {
     {
       title: "Created At",
       dataIndex: "createdAt",
-      render: (createdAt) => new Date(createdAt).toLocaleDateString(), 
+      render: (createdAt) => new Date(createdAt).toLocaleDateString(),
     },
     {
       title: "Action",
@@ -129,9 +97,8 @@ const SubCategory = () => {
             />
           </Tooltip>
           <Popconfirm
-            title="Are you sure to delete this category?"
+            title="Are you sure to delete this sub-category?"
             onConfirm={() => {
-              console.log(record.id);
               deleteSubCategory(record.id).then(() => {
                 queryClient.invalidateQueries({ queryKey: ["subcategory"] });
               });
@@ -148,25 +115,18 @@ const SubCategory = () => {
 
   return (
     <>
-      <SubCategoryModal
-        open={open}
-        handleClose={handleClose}
-        update={updateData}
-        onSubmit={handleSubmit}
-      />
+      <SubCategoryModal open={open} handleClose={handleClose} update={updateData} />
       <div className="flex justify-between mb-4">
-      <Input placeholder="search..." className="w-[350px]" />
-      <Button
-        onClick={() => {
-          setOpen(true);
-          setUpdateData(null);
-        }}
-        type="primary"
-      >
-        Create SubCategory
-      </Button>
-
-
+        <Input placeholder="search..." className="w-[350px]" />
+        <Button
+          onClick={() => {
+            setOpen(true);
+            setUpdateData(null);
+          }}
+          type="primary"
+        >
+          Create SubCategory
+        </Button>
       </div>
       <GlobalTable
         columns={columns}

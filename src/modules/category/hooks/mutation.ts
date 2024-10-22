@@ -11,6 +11,7 @@ export function useCreateCategory () {
         mutationFn: (data:CategoryDataType) => createCategory(data),
         onSuccess: async (response)=>{
             Notification('success', response?.message)
+            await queryClient.invalidateQueries({queryKey: ['category']})
         },
         onSettled: async (_,error)=>{
                if (error) {
@@ -53,6 +54,7 @@ export function useDeleteCategory(){
         mutationFn: (id: string | number) => deleteCategory(id),
         onSuccess: (response)=>{
             Notification("success", response?.message) 
+            queryClient.invalidateQueries({queryKey: ['category']})
         },
         onSettled: async (_,error)=>{
             if (error) {
