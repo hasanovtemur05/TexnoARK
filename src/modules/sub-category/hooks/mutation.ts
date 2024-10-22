@@ -12,7 +12,7 @@ export function useCreateSubCategory() {
     return useMutation({
         mutationFn: (data: SubCategoryDataType) => createSubCategory(data),
         onSuccess: (response) => {
-            Notification('success', response?.message);
+            Notification('success', response.message);
             queryClient.invalidateQueries({ queryKey: ['subcategory'] }); 
         },
         onError: (error) => {
@@ -28,12 +28,12 @@ export function useUpdateSubCategory() {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: ({ id, data }: { id: number; data: SubCategoryDataType }) => updateSubCategory(id, data),
-      onSuccess: async (response) => {
-        Notification("success", response?.message);
-        await queryClient.invalidateQueries({ queryKey: ['subcategory'] });
+      onSuccess: (response) => {
+        Notification("success", response.message);
+        queryClient.invalidateQueries({ queryKey: ['subcategory'] });
       },
       onError: (error) => {
-        Notification('error', error?.message);
+        Notification('error', error.message);
       },
     });
   }
@@ -46,8 +46,7 @@ export function useDeleteSubCategory() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id: string | number) => deleteSubCategory(id),
-        onSuccess: (response) => {
-            Notification("success", response?.message);
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['subcategory'] }); 
         },
         onError: (error) => {

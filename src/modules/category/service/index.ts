@@ -11,6 +11,8 @@ export const getCategory = async (params: ParamsType) => {
 }
 
 
+
+
 // =======================  CREATE  ===========================
 export const createCategory = async (data:CategoryDataType) => {
     const response = await axiosInstance.post("category/create", data)

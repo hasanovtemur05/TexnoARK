@@ -9,17 +9,14 @@ export function useCreateCategory () {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (data:CategoryDataType) => createCategory(data),
-        onSuccess: async (response)=>{
+        onSuccess: (response)=>{
             Notification('success', response?.message)
-            await queryClient.invalidateQueries({queryKey: ['category']})
+            queryClient.invalidateQueries({queryKey: ['category']})
         },
-        onSettled: async (_,error)=>{
-               if (error) {
-               Notification('error', error?.message)
-               }else{
-                await queryClient.invalidateQueries({queryKey: ['category']})
-               }
-        },
+       onError: (error)=> {
+            Notification("error", error.message)
+            queryClient.invalidateQueries({queryKey: ['category']})
+       }
        
     })
 }
@@ -36,11 +33,10 @@ export function useUpdateCategory() {
         queryClient.invalidateQueries({ queryKey: ['category'] }); 
       },
       onError: (error) => {
-        Notification('error', error?.message); 
-      },
-      onSettled: () => {
+        Notification('error', error.message); 
         queryClient.invalidateQueries({ queryKey: ['category'] });
       },
+      
     });
 }
 
@@ -52,16 +48,12 @@ export function useDeleteCategory(){
     const queryClient = useQueryClient() 
     return useMutation({
         mutationFn: (id: string | number) => deleteCategory(id),
-        onSuccess: (response)=>{
-            Notification("success", response?.message) 
+        onSuccess: ()=>{
             queryClient.invalidateQueries({queryKey: ['category']})
         },
-        onSettled: async (_,error)=>{
-            if (error) {
-                Notification("error", error?.message)
-            } else{
-               await queryClient.invalidateQueries({queryKey: ['category']})
-            }
+        onError: (error)=>{
+            Notification("error", error.message)
+            queryClient.invalidateQueries({queryKey: ['category']})
         }
     })
 }

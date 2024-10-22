@@ -2,7 +2,11 @@ import { useState } from "react";
 import { useGetCategory } from "../hooks/queries";
 import CategoryModal from "./modal";
 import { Button, Tooltip, Popconfirm, Space } from "antd";
-import { EditOutlined, DeleteOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ArrowRightOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Category as CategoryType, CategoryDataType } from "../types";
 import { deleteCategory } from "../service";
@@ -30,7 +34,10 @@ const Category = () => {
     setUpdateData(null);
   };
 
-  const handleTableChange = (pagination: { current?: number; pageSize?: number }) => {
+  const handleTableChange = (pagination: {
+    current?: number;
+    pageSize?: number;
+  }) => {
     const { current = 1, pageSize = 10 } = pagination;
     setParams((prev) => ({
       ...prev,
@@ -50,7 +57,8 @@ const Category = () => {
     {
       title: "T/R",
       dataIndex: "index",
-      render: (_text, _record, index) => index + 1 + (params.page - 1) * params.limit,
+      render: (_text, _record, index) =>
+        index + 1 + (params.page - 1) * params.limit,
     },
     {
       title: "Name",
@@ -59,7 +67,7 @@ const Category = () => {
     {
       title: "Created At",
       dataIndex: "createdAt",
-      render: (createdAt) => new Date(createdAt).toLocaleDateString(), 
+      render: (createdAt) => new Date(createdAt).toLocaleDateString(),
     },
     {
       title: "Action",
@@ -88,7 +96,9 @@ const Category = () => {
           </Popconfirm>
           <Tooltip title="Sub-category">
             <Button
-              onClick={() => navigate(`/admin-layout/sub-category/${record.id}`)}
+              onClick={() =>
+                navigate(`/admin-layout/sub-category/${record.id}`)
+              }
               icon={<ArrowRightOutlined />}
             />
           </Tooltip>
@@ -99,8 +109,18 @@ const Category = () => {
 
   return (
     <>
-      <CategoryModal open={open} handleClose={handleClose} update={updateData} />
-      <Button onClick={() => { setOpen(true); setUpdateData(null); }} type="primary">
+      <CategoryModal
+        open={open}
+        handleClose={handleClose}
+        update={updateData}
+      />
+      <Button
+        onClick={() => {
+          setOpen(true);
+          setUpdateData(null);
+        }}
+        type="primary"
+      >
         Create Category
       </Button>
 
@@ -110,7 +130,7 @@ const Category = () => {
         pagination={{
           current: params.page,
           pageSize: params.limit,
-          total: data?.total || 2, 
+          total: data?.total || 2,
           showSizeChanger: true,
           pageSizeOptions: ["3", "5", "7", "10", "12"],
         }}

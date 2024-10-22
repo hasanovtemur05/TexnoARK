@@ -19,6 +19,9 @@ export const getBrandCategory = async (params: ParamsType) => {
 };
 
 
+
+
+
 // ======================  CREATE BRAND-CATEGORY  ===============================
 export const createBrandCategory = async(data:BrandCategoryType) => {
     const response = await axiosInstance.post("/brand-category/create", data)

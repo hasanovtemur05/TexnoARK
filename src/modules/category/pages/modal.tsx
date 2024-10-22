@@ -6,8 +6,6 @@ import { useCreateCategory, useUpdateCategory } from "../hooks/mutation";
 import { useQueryClient } from "@tanstack/react-query";
 import { ModalPropType } from "@types";
 
-
-
 const CategoryModal = ({ open, handleClose, update }: ModalPropType) => {
   const [form] = useForm();
   const queryClient = useQueryClient();

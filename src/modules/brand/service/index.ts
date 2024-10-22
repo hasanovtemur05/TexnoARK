@@ -17,6 +17,8 @@ export const getCategories = async ()=>{
 }
 
 
+
+
 // =======================  CREATE  ===========================
 export const createBrand = async (data:FormData) => {
     const response = await axiosInstance.post("brand/create", data)

@@ -38,10 +38,12 @@ const BrandModal = ({ open, handleClose, update }: ModalPropType) => {
     formData.append("category_id", `${values.category_id}`);
     formData.append("description", values.description);
 
-    console.log(values);
+    console.log("Submitting values: ", values);
     
-    if (file) {
-        formData.append("file", file);
+    if (!update) { 
+        if (file) {
+            formData.append("file", file);
+        }
     }
 
     if (update?.id) {
