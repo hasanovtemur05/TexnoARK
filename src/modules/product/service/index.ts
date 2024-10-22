@@ -22,7 +22,7 @@ export const createProduct = async (data:ProductType) => {
 
 // =============================  DELETE PRODUCT  ==================================
 export const updateProduct = async (id:number, data:ProductType) => {
-    const response = await axiosInstance.post(`products/update/${id}`, data)
+    const response = await axiosInstance.patch(`products/update/${id}`, data)
     return response?.data
 }
 
@@ -30,7 +30,7 @@ export const updateProduct = async (id:number, data:ProductType) => {
 
 // =============================  DELETE PRODUCT  ==================================
 export const deleteProduct = async (id:number) => {
-    const response = await axiosInstance.post(`products/delete/${id}`)
+    const response = await axiosInstance.delete(`products/delete/${id}`)
     return response?.data
 }
 

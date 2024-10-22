@@ -5,6 +5,7 @@ import { useBrandById, useBrandCategoryById } from "../hooks/queries";
 import { useGetCategory } from "../../category/hooks/queries";
 import { useForm } from "antd/es/form/Form";
 import { useCreateProduct, useUpdateProduct } from "../hooks/mutation";
+import { Notification } from "../../../utils/notification";
 
 const { Option } = Select;
 
@@ -73,21 +74,23 @@ const ProductModal = ({ open, handleClose, update }: ModalPropType) => {
             updateMutate(
                 { id: update.id, data: payload },
                 {
-                    onSuccess: () => {
+                    onSuccess: (response) => {
+                        Notification("success", response.message)
                         handleClose();
                     },
                     onError: (error) => {
-                        console.error("Error updating product:", error);
+                        Notification("error", error.message)
                     },
                 }
             );
         } else {
             createMutate(payload, {
-                onSuccess: () => {
+                onSuccess: (response) => {
                     handleClose();
+                    Notification("success", response.message)
                 },
                 onError: (error) => {
-                    console.error("Error creating product:", error);
+                    Notification("error", error.message)
                 },
             });
         }
