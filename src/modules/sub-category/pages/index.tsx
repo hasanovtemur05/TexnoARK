@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetSubCategory } from "../hooks/queries";
 import { useCreateSubCategory, useUpdateSubCategory } from "../hooks/mutation";
 import SubCategoryModal from "./modal";
-import { Button, Tooltip, Popconfirm, Space } from "antd";
+import { Button, Tooltip, Popconfirm, Space, Input } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { GlobalTable, Loading } from "@components";
 import { ColumnsType } from "antd/es/table";
 import { ParamsType } from "@types";
@@ -24,11 +24,18 @@ const SubCategory = () => {
   const [updateData, setUpdateData] = useState<SubCategoryDataType | null>(
     null
   );
+  const { search } = useLocation();
+  const [total, setTotal] = useState(0);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data, isLoading } = useGetSubCategory();
   console.log(data?.data?.subcategories);
 
+  useEffect(() => {
+    if (data?.data?.count) {
+      setTotal(data?.data?.count);  
+    }
+  }, [data]);
   const { mutate: createMutate } = useCreateSubCategory();
   const { mutate: updateMutate } = useUpdateSubCategory();
 
@@ -63,18 +70,31 @@ const SubCategory = () => {
     current?: number;
     pageSize?: number;
   }) => {
-    const { current = 1, pageSize = 10 } = pagination;
+    const { current = 1, pageSize = 3 } = pagination;
     setParams((prev) => ({
       ...prev,
       page: current,
       limit: pageSize,
     }));
 
-    const current_params = new URLSearchParams(window.location.search);
+    const current_params = new URLSearchParams(search);
     current_params.set("page", `${current}`);
     current_params.set("limit", `${pageSize}`);
     navigate(`?${current_params.toString()}`);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    const page = Number(params.get("page")) || 1;
+    const limit = Number(params.get("limit")) || 3;
+    const searchQuery = params.get("search") || "";
+    setParams((prev) => ({
+      ...prev,
+      page: page,
+      limit: limit,
+      search: searchQuery,
+    }));
+  }, [search]);
 
   if (isLoading) return <Loading />;
 
@@ -92,6 +112,7 @@ const SubCategory = () => {
     {
       title: "Created At",
       dataIndex: "createdAt",
+      render: (createdAt) => new Date(createdAt).toLocaleDateString(), 
     },
     {
       title: "Action",
@@ -133,6 +154,8 @@ const SubCategory = () => {
         update={updateData}
         onSubmit={handleSubmit}
       />
+      <div className="flex justify-between mb-4">
+      <Input placeholder="search..." className="w-[350px]" />
       <Button
         onClick={() => {
           setOpen(true);
@@ -142,13 +165,16 @@ const SubCategory = () => {
       >
         Create SubCategory
       </Button>
+
+
+      </div>
       <GlobalTable
         columns={columns}
         data={data?.data?.subcategories}
         pagination={{
           current: params.page,
           pageSize: params.limit,
-          total: data?.total || 0,
+          total: total,
           showSizeChanger: true,
           pageSizeOptions: ["2", "5", "7", "10", "12"],
         }}

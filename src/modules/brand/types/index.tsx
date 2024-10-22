@@ -5,3 +5,9 @@ export interface BrandType {
     file: string;
     id?: number;
 }
+
+
+export interface CategoryType {
+    id: number,
+    name: string
+}

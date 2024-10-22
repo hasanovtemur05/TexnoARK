@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetBrand } from "../hooks/queries";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -9,7 +9,6 @@ import { ParamsType } from "@types";
 import { Category } from "../../category/types";
 import { BrandType } from "../types";
 import { Button, Popconfirm, Space, Tooltip } from "antd";
-import { useCreateBrand, useUpdateBrand } from "../hooks/mutation";
 import { deleteBrand } from "../service";
 import BrandModal from "./modal";
 
@@ -19,45 +18,30 @@ const Brand = () => {
     page: 1,
     search: "",
   });
-
+  const [total, setTotal] = useState(0)
   const [open, setOpen] = useState(false);
   const [updateData, setUpdateData] = useState<BrandType | null>(
     null
   );
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useGetBrand(params);
-  console.log(data?.data?.brands);
+  const { data, isLoading } = useGetBrand(params)
+  
+  useEffect(() => {
+    if (data?.data?.count) {
+      setTotal(data?.data?.count); 
+    }    
+  }, [data]);
+  
 
-
-  const { mutate: createMutate } = useCreateBrand();
-  const { mutate: updateMutate } = useUpdateBrand();
+  
 
   const handleClose = () => {
     setOpen(false);
     setUpdateData(null);
   };
 
-  const handleSubmit = (values: BrandType) => {
-    if (updateData) {
-      const payload = { ...values }; 
-      const categoryId = Number(updateData.id); 
-  
-      updateMutate({ id: categoryId, data: payload });
-      
-      handleClose(); 
-    } else {
-      createMutate(values, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["subcategory"] });
-          handleClose();
-        },
-        onError: () => {
-          handleClose();
-        },
-      });
-    }
-  };
+ 
   
 
   const handleTableChange = (pagination: {
@@ -118,7 +102,7 @@ const Brand = () => {
             title="Are you sure to delete this category?"
             onConfirm={() => {
               deleteBrand(record.id).then(() => {
-                queryClient.invalidateQueries({ queryKey: ["subcategory"] });
+                queryClient.invalidateQueries({ queryKey: ["brands"] });
               });
             }}
           >
@@ -131,13 +115,15 @@ const Brand = () => {
     },
   ];
 
+
+
   return (
     <>
       <BrandModal
         open={open}
         handleClose={handleClose}
         update={updateData}
-        onSubmit={handleSubmit}
+        onSubmit={undefined}
       /> 
        <Button
         onClick={() => {
@@ -154,7 +140,7 @@ const Brand = () => {
         pagination={{
           current: params.page,
           pageSize: params.limit,
-          total: data?.total || 0,
+          total: total,
           showSizeChanger: true,
           pageSizeOptions: ["2", "5", "7", "10", "12"],
         }}

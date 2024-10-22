@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createBrand, deleteBrand, updateBrand } from "../service";
-import { BrandType } from "../types";
 import { Notification } from "../../../utils/notification";
 
 
@@ -8,15 +7,16 @@ import { Notification } from "../../../utils/notification";
 export function useCreateBrand () {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: (data:BrandType) => createBrand(data),
+        mutationFn: (data:FormData) => createBrand(data),
         onSuccess: async (response)=>{
             Notification('success', response?.message)
+            await queryClient.invalidateQueries({ queryKey: ['brands'] });
         },
         onSettled: async (_,error)=>{
                if (error) {
                Notification('error', error?.message)
                }else{
-                await queryClient.invalidateQueries({queryKey: ['brand']})
+                await queryClient.invalidateQueries({queryKey: ['brands']})
                }
         },
        
@@ -29,16 +29,16 @@ export function useUpdateBrand() {
     const queryClient = useQueryClient();
   
     return useMutation({
-      mutationFn: (data: BrandType) => updateBrand(data),
-      onSuccess: (response) => {
+      mutationFn: (data: FormData) => updateBrand(data),
+      onSuccess:async (response) => {
         Notification("success", response?.message);
-        queryClient.invalidateQueries({ queryKey: ['brand'] }); 
+        await queryClient.invalidateQueries({ queryKey: ['brands'] }); 
       },
       onError: (error) => {
         Notification('error', error?.message); 
       },
       onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: ['brand'] });
+        queryClient.invalidateQueries({ queryKey: ['brands'] });
       },
     });
 }
@@ -51,14 +51,15 @@ export function useDeleteBrand(){
     const queryClient = useQueryClient() 
     return useMutation({
         mutationFn: (id: string | number) => deleteBrand(id),
-        onSuccess: (response)=>{
+        onSuccess:async (response)=>{
             Notification("success", response?.message)
+            await queryClient.invalidateQueries({ queryKey: ['brands'] });
         },
         onSettled: async (error)=>{
             if (error) {
                 Notification("error", error?.message)
             } else{
-               await queryClient.invalidateQueries({queryKey: ['brand']})
+               await queryClient.invalidateQueries({queryKey: ['brands']})
             }
         }
     })

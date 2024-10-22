@@ -26,4 +26,12 @@ const Brand = loadable(()=> import ("./brand/pages"),{
     fallback: <Loading/>
 })
 
-export { SignIn, SignUp, Category, AdminLayout, SubCategory, Brand }
+const BrandCategory = loadable(()=> import ("./brand-category/pages"),{
+    fallback: <Loading/>
+})
+
+const Product = loadable(()=> import ("./product/pages"),{
+    fallback: <Loading/>
+})
+
+export { SignIn, SignUp, Category, AdminLayout, SubCategory, Brand, BrandCategory, Product }

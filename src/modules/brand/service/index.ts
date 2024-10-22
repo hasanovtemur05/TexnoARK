@@ -1,9 +1,8 @@
 import axiosInstance from "@api";
 import { ParamsType } from "@types";
-import { BrandType } from "../types";
 
 // ===================  GET BRAND  ========================
-export const getBrand = async (params: ParamsType) => {
+export const getBrand = async (params?: ParamsType) => {
     const response = await axiosInstance.get("brand/search", {
         params
     })
@@ -11,8 +10,15 @@ export const getBrand = async (params: ParamsType) => {
 }
 
 
+// ======================  GET CATEGORY  =======================
+export const getCategories = async ()=>{
+    const response = await axiosInstance.get("category/search")
+    return response?.data
+}
+
+
 // =======================  CREATE  ===========================
-export const createBrand = async (data:BrandType) => {
+export const createBrand = async (data:FormData) => {
     const response = await axiosInstance.post("brand/create", data)
     return response?.data
 }
@@ -20,8 +26,17 @@ export const createBrand = async (data:BrandType) => {
 
 
 // ======================  UPDATE  ==========================
-export const updateBrand = async (data: BrandType) => {
-    const { id, ...updateData } = data;  
+export const updateBrand = async (data: FormData) => {
+    const id = data.get('id'); 
+    if (typeof id !== 'string') {
+        throw new Error("ID is required and must be a string"); 
+    }
+    const updateData: { [key: string]: any } = {}; 
+    for (const [key, value] of data.entries()) {
+        if (key !== 'id') {
+            updateData[key] = value; 
+        }
+    }
     const response = await axiosInstance.patch(`brand/update/${id}`, updateData);  
     return response?.data;
 };

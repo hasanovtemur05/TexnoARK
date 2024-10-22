@@ -88,6 +88,7 @@ const Category = () => {
     {
       title: "Created At",
       dataIndex: "createdAt",
+      render: (createdAt) => new Date(createdAt).toLocaleDateString(), 
     },
     {
       title: "Action",
