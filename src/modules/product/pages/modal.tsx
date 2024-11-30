@@ -117,12 +117,12 @@ const ProductModal = ({ open, handleClose, update }: ModalPropType) => {
       
         createMutate(formData as unknown as ProductType, {
           onSuccess: () => {
-            Notification("success", "Product added successfully!");
             handleClose();
           },
           onError: (error) => {
-            Notification("error", error.message || "An error occurred");
             handleClose();
+            console.log(error);
+            
           },
         });
       }
