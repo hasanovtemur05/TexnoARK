@@ -12,5 +12,5 @@ export async function signIn(data:SignIn){
 // ===================  Sign Up  =========================
 
 export async function signUp(data:SignUp){
-    return await axiosInstance.post("/auth/sign-up", data)
+    return await axiosInstance.post("/auth/admin/sign-up", data)
 }

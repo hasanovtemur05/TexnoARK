@@ -136,7 +136,6 @@ const BrandCategory = () => {
         open={open}
         handleClose={handleClose}
         update={updateData}
-        onSubmit={undefined}
       />
       <div className="flex justify-between mb-4">
       <Input placeholder="search..." className="w-[350px]" />

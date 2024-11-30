@@ -34,4 +34,8 @@ const Product = loadable(()=> import ("./product/pages"),{
     fallback: <Loading/>
 })
 
-export { SignIn, SignUp, Category, AdminLayout, SubCategory, Brand, BrandCategory, Product }
+const Notfound = loadable(()=> import ("./not-found/pages"),{
+    fallback: <Loading/>
+})
+
+export { SignIn, SignUp, Category, AdminLayout, SubCategory, Brand, BrandCategory, Product, Notfound }

@@ -10,8 +10,6 @@ export const getProduct = async (params: ParamsType) => {
 };
 
 
-
-
 // =============================  CREATE PRODUCT  ==================================
 export const createProduct = async (data:ProductType) => {
     const response = await axiosInstance.post('products/create', data)
@@ -20,7 +18,7 @@ export const createProduct = async (data:ProductType) => {
 
 
 
-// =============================  DELETE PRODUCT  ==================================
+// =============================  UPDATE PRODUCT  ==================================
 export const updateProduct = async (id:number, data:ProductType) => {
     const response = await axiosInstance.patch(`products/update/${id}`, data)
     return response?.data

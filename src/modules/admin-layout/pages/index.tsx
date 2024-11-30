@@ -29,10 +29,11 @@ const Index = () => {
   }, [pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token"); 
     message.success("Logged out successfully");
     navigate("/");
   };
+  
 
   const userMenu = (
     <Menu>
@@ -52,7 +53,7 @@ const Index = () => {
     <>
       <Layout className="h-[100vh] overflow-hidden">
         <Sider trigger={null} collapsible collapsed={collapsed}>
-          <div className="w-[80%] h-auto m-[10px]">
+        <div className="w-[80%] h-auto m-[10px]">
             <img src={logo} alt="logo" />
           </div>
           <Menu

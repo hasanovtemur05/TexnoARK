@@ -24,7 +24,7 @@ export function useBrandById (id:number){
 export function useBrandCategoryById (id: number){
     return useQuery({
         queryFn:()=> getBrandCategoryById(id),
-        queryKey: ['product']
+        queryKey: ['product', id]
     })
    
 }

@@ -30,11 +30,10 @@ const Brand = () => {
   useEffect(() => {
     if (data?.data?.count) {
       setTotal(data?.data?.count); 
-    }    
+    } 
+    
+       
   }, [data]);
-  
-
-  
 
   const handleClose = () => {
     setOpen(false);
@@ -123,7 +122,6 @@ const Brand = () => {
         open={open}
         handleClose={handleClose}
         update={updateData}
-        onSubmit={undefined}
       /> 
        <Button
         onClick={() => {

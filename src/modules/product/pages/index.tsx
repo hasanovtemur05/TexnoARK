@@ -49,7 +49,7 @@ const Product = () => {
   const handleDelete = (id: number) => {
     deleteMutate(id, {
       onSuccess: () => {
-        setParams((prev) => ({ ...prev })); // To refresh the product list
+        setParams((prev) => ({ ...prev })); 
       },
     });
   };
@@ -123,7 +123,7 @@ const Product = () => {
         pagination={{
           total: total,
           showSizeChanger: true,
-          pageSizeOptions: ["5", "10", "20", "50"],
+          pageSizeOptions: ["3", "5", "7", "10"],
         }}
         onChange={handleTableChange}
       />

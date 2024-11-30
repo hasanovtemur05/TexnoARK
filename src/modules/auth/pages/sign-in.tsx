@@ -20,9 +20,9 @@ const SignIn = () => {
     mutate(values, {
       onSuccess: (res) => {
         const access_token = res.data?.data?.tokens?.access_token
-        console.log(res);
         localStorage.setItem("access_token",access_token );
         navigate("./admin-layout");
+        Notification("success", access_token.message)
       },
       onError: (error) => {
         Notification('error', error.message)
@@ -67,7 +67,7 @@ const SignIn = () => {
                   htmlType="submit"
                   block
                 >
-                  Sign In
+                  Sign-in
                 </Button>
               </Form.Item>
             </Form>
