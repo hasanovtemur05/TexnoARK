@@ -34,6 +34,8 @@ const Product = loadable(()=> import ("./product/pages"),{
     fallback: <Loading/>
 })
 
+
+
 const Notfound = loadable(()=> import ("./not-found/pages"),{
     fallback: <Loading/>
 })

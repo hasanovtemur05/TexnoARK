@@ -1,13 +1,12 @@
-import { Formik, Field, FieldInputProps, Form as FormikForm } from "formik";
-import { Input, Button } from "antd";
+import { Input, Button, Form } from "antd";
 import { SignUp as SignUpType } from "../types";
 import { useSignUpMutation } from "../hooks/mutations";
 import { Notification } from "../../../utils/notification";
 import { useNavigate } from "react-router-dom";
-
+import erp from "../../../assets/images/erp.jpg";
 const SignUp = () => {
   const { mutate } = useSignUpMutation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const initialValues: SignUpType = {
     first_name: "",
     last_name: "",
@@ -21,75 +20,118 @@ const SignUp = () => {
     mutate(payload, {
       onSuccess: (res) => {
         console.log(res);
-        navigate("/")
+        navigate("/");
       },
-      onError:(error) => {
-        Notification('error', error?.message)
-      }
+      onError: (error) => {
+        Notification("error", error?.message);
+      },
     });
   }
 
   return (
-    <div style={{ margin: "auto", marginTop: "50px" }} className="max-w-64 lg:max-w-[450px]">
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-      >
-        {({ handleSubmit }) => (
-          <FormikForm onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>First Name</label>
-              <Field name="first_name">
-                {({ field }: { field: FieldInputProps<string> }) => (
-                  <Input {...field} placeholder="First Name" />
-                )}
-              </Field>
-            </div>
+    <div className="w-full h-[100vh] flex justify-center items-center">
+      <div className="w-[50%] h-[100%] hidden md:block">
+        <img src={erp} alt="erp" className="h-[100%] object-cover" />
+      </div>
 
-            <div className="form-group">
-              <label>Last Name</label>
-              <Field name="last_name">
-                {({ field }: { field: FieldInputProps<string> }) => (
-                  <Input {...field} placeholder="Last Name" />
-                )}
-              </Field>
-            </div>
+      <div className="w-[70%] flex flex-col justify-center items-center md:w-[50%]">
+        <div className="w-full md:w-[60%]">
+          <h1
+            style={{
+              textAlign: "center",
+              fontSize: "24px",
+              fontWeight: "bold",
+              padding: "10px 10px",
+            }}
+          >
+            Register
+          </h1>
+          <Form
+            onFinish={handleSubmit}
+            layout="vertical"
+            initialValues={initialValues}
+          >
+            <Form.Item
+              name="first_name"
+              label={<span style={{ fontSize: "14px" }}>first name</span>}
+              rules={[
+                { required: true, message: "Please input your first name!" },
+              ]}
+            >
+              <Input
+                placeholder="Enter your first name"
+                style={{ padding: "5px 15px", fontSize: "14px" }}
+              />
+            </Form.Item>
 
-            <div className="form-group">
-              <label>Phone Number</label>
-              <Field name="phone_number">
-                {({ field }: { field: FieldInputProps<string> }) => (
-                  <Input {...field} placeholder="Phone Number" />
-                )}
-              </Field>
-            </div>
+            <Form.Item
+              name="last_name"
+              label={<span style={{ fontSize: "14px" }}>last name</span>}
+              rules={[
+                { required: true, message: "Please input your last name!" },
+              ]}
+            >
+              <Input
+                placeholder="Enter your last name"
+                style={{ padding: "5px 15px", fontSize: "14px" }}
+              />
+            </Form.Item>
 
-            <div className="form-group">
-              <label>Email</label>
-              <Field name="email">
-                {({ field }: { field: FieldInputProps<string> }) => (
-                  <Input {...field} placeholder="Email" />
-                )}
-              </Field>
-            </div>
+            <Form.Item
+              name="phone_number"
+              label={<span style={{ fontSize: "14px" }}>phone number</span>}
+              rules={[
+                { required: true, message: "Please input your phone number!" },
+              ]}
+            >
+              <Input
+                placeholder="Enter your phone number"
+                style={{ padding: "5px 15px", fontSize: "14px" }}
+              />
+            </Form.Item>
 
-            <div className="form-group">
-              <label>Password</label>
-              <Field name="password">
-                {({ field }: { field: FieldInputProps<string> }) => (
-                  <Input.Password {...field} placeholder="Password" />
-                )}
-              </Field>
-            </div>
+            <Form.Item
+              name="email"
+              label={<span style={{ fontSize: "14px" }}>email</span>}
+              rules={[{ required: true, message: "Please input your email!" }]}
+            >
+              <Input
+                placeholder="Enter your email"
+                style={{ padding: "5px 15px", fontSize: "14px" }}
+              />
+            </Form.Item>
 
-            <div className="form-group">
-              <Button type="primary" htmlType="submit" block>
-                Save
+            <Form.Item
+              name="password"
+              label={<span style={{ fontSize: "14px" }}>Password</span>}
+              rules={[
+                { required: true, message: "Please input your password!" },
+              ]}
+            >
+              <Input.Password
+                placeholder="Enter your password"
+                style={{ padding: "7px 15px", fontSize: "16px" }}
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Button
+                className="font-medium "
+                style={{
+                  backgroundColor: "#ffa107",
+                  fontSize: "16px",
+                  padding: "25px",
+                }}
+                type="primary"
+                htmlType="submit"
+                block
+              >
+                Register
               </Button>
-            </div>
-          </FormikForm>
-        )}
-      </Formik>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
     </div>
   );
 };

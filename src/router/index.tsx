@@ -20,6 +20,7 @@ import {
               <Route path="brand" element={<Brand />} />
               <Route path="brand-category" element={<BrandCategory />} />
               <Route path="product" element={<Product />} />
+             
           </Route>
           <Route path="*" element={<Notfound/>} />
         </Route>

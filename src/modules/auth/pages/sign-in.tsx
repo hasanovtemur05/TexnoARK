@@ -2,8 +2,8 @@
 import { useSignInMutation } from "../hooks/mutations"
 import { Form, Input, Button } from "antd";  
 import erp from "../../../assets/images/erp.jpg";
-import { SignIn as SignInType} from "../types";
-import { useNavigate } from "react-router-dom";
+import { SignInType} from "../types";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Notification } from "../../../utils/notification";
 
 
@@ -57,11 +57,15 @@ const SignIn = () => {
                 label={<span style={{ fontSize: "14px" }}>Password</span>}
                 rules={[{ required: true, message: "Please input your password!" }]}
               >
-                <Input.Password placeholder="Enter your password" style={{ padding: "7px 15px", fontSize: "16px" }} />
+                <Input.Password placeholder="Enter your password" 
+                style={{ padding: "7px 15px", fontSize: "16px"}}
+                
+                />
               </Form.Item>
 
               <Form.Item>
                 <Button
+                  className="font-medium "
                   style={{ backgroundColor: "#ffa107", fontSize: "16px", padding: "25px" }}
                   type="primary"
                   htmlType="submit"
@@ -69,8 +73,14 @@ const SignIn = () => {
                 >
                   Sign-in
                 </Button>
+                
               </Form.Item>
             </Form>
+            <div className=" flex gap-3">
+              <h1>Don’t you have an account?</h1>
+              <NavLink to={"/sign-up"} className="text-[#ffa107] font-medium">Registrate</NavLink>
+            </div>
+
           </div>
         </div>
       </div>

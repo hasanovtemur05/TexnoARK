@@ -1,6 +1,12 @@
-import { useState, useEffect, JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from "react";
-import { useNavigate, Outlet, useLocation, NavLink, NavLinkRenderProps, To } from "react-router-dom";
-import logo from "../../../assets/images/logo.png";
+import { useState, useEffect, } from "react";
+import {
+  useNavigate,
+  Outlet,
+  useLocation,
+  NavLink,
+ 
+} from "react-router-dom";
+import logo from "../../../assets/images/logo.svg";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -29,11 +35,10 @@ const Index = () => {
   }, [pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token"); 
+    localStorage.removeItem("access_token");
     message.success("Logged out successfully");
     navigate("/");
   };
-  
 
   const userMenu = (
     <Menu>
@@ -52,26 +57,53 @@ const Index = () => {
   return (
     <>
       <Layout className="h-[100vh] overflow-hidden">
-        <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="w-[80%] h-auto m-[10px]">
-            <img src={logo} alt="logo" />
+      <Sider
+        collapsedWidth={65}
+        style={{ height: "100vh" }}
+        width={250}
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+      >
+        {collapsed ? (
+          <div
+            onClick={() => navigate("/")}
+            className="demo-logo-vertical cursor-pointer h-[60px] my-2 flex items-center mx-3"
+          >
+            <img
+              src={logo}
+              alt="logo"
+              className="w-[40px]"
+            />
           </div>
-          <Menu
-            theme="dark"
-            mode="inline"
-            defaultSelectedKeys={[""]}
-            selectedKeys={[selectedKeys]}
-            items={admin.map((item: { icon: any; path: To; content: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | ((props: NavLinkRenderProps) => React.ReactNode) | null | undefined; }, index: number) => ({
-              key: index.toString(),
-              icon: item.icon,
-              label: (
-                <NavLink to={item.path} className="text-white">
-                  {item.content}
-                </NavLink>
-              ),
-            }))}
-          />
-        </Sider>
+        ) : (
+          <div
+            onClick={() => navigate("/admin-layout")}
+            className="demo-logo-vertical cursor-pointer mx-3 my-2 h-[60px] flex items-center gap-3"
+          >
+            <img
+              src={logo}
+              alt="logo"
+              className="w-[40px]"
+            />
+            <span className="text-[20px] text-[#fff]">TechnoArk</span>
+          </div>
+        )}
+      <Menu theme="dark" selectedKeys={[selectedKeys]}>
+          {admin.map((item, index) => (
+            <Menu.Item
+              icon={item.icon}
+              key={index}
+              className={item.path === pathname ? "ant-menu-items" : "" }
+              
+            >
+              <NavLink to={item.path} key={index}>
+                <span className="text-[18px]">{item.content}</span>
+              </NavLink>
+            </Menu.Item>
+          ))}
+        </Menu>
+      </Sider>
         <Layout className="overflow-auto">
           <Header
             style={{
@@ -80,6 +112,7 @@ const Index = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              backgroundColor: "white"
             }}
           >
             <Button
@@ -93,18 +126,16 @@ const Index = () => {
             </Dropdown>
           </Header>
           <Content
-            style={{
-              margin: "24px 16px",
-              padding: 24,
-              minHeight: 280,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-              height: "calc(100vh - 112px)", 
-              overflowY: "auto", 
-            }}
-          >
-            <Outlet />
-          </Content>
+          style={{
+            margin: "24px 16px",
+            padding: 24,
+            minHeight: 280,
+            background: colorBgContainer,
+            borderRadius: borderRadiusLG,
+          }}
+        >
+          <Outlet />
+        </Content>
         </Layout>
       </Layout>
     </>
