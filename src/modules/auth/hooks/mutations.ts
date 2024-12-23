@@ -1,10 +1,10 @@
 import {useMutation} from '@tanstack/react-query';
 import { signIn, signUp } from '../service';
-import { SignIn, SignUp } from '../types';
+import { SignInType, SignUp } from '../types';
 
 export function useSignInMutation(){
     return useMutation({
-        mutationFn: (data:SignIn)=> signIn(data),
+        mutationFn: (data:SignInType)=> signIn(data),
     })
 }
 
